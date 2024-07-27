@@ -1,0 +1,36 @@
+
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .contact-content {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .contact-content h1 {
+    margin-bottom: 20px;
+  }
+  
+  .contact-content ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .contact-content li {
+    margin: 10px 0;
+  }
+  
+  .contact-content a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .contact-content a:hover {
+    text-decoration: underline;
+  }
+  
