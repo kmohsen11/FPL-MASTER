@@ -1,2 +1,7 @@
 Flask
 Flask-SQLAlchemy
+flask-cors
+sqlalchemy
+numpy
+scipy
+rapidfuzz
