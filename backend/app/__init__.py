@@ -1,26 +1,21 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-db = SQLAlchemy()
+from flask_cors import CORS  # Import Flask-CORS
 
 def create_app():
     app = Flask(__name__)
-
-    # Configuration
-    app.config['SECRET_KEY'] = 'you-will-never-guess'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.init_app(app)
-    CORS(app)
+    # Enable CORS for all routes
+    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
+    # Initialize database and register blueprints
+    from app.models import db
+    db.init_app(app)
+    from app.routes import api
+    app.register_blueprint(api, url_prefix='/api')
 
     with app.app_context():
-        # Import routes and models after app context is created
-        from . import routes
-        from . import models
-        
-        # Create the database tables
         db.create_all()
 
     return app

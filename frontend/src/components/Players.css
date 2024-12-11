@@ -1,0 +1,84 @@
+.players-container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  color: #fff;
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  width: 60%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.loading-text {
+  color: #007bff;
+}
+
+.error-container {
+  margin-top: 20px;
+}
+
+.error-text {
+  color: red;
+  font-weight: bold;
+}
+
+.suggestions {
+  margin-top: 10px;
+  color: #aaa;
+}
+
+.suggestions ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.suggestions li {
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.suggestions li:hover {
+  color: #0056b3;
+}
+
+.player-card {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #fff;
+}
+
+.player-card h3 {
+  margin-bottom: 10px;
+  color: #007bff;
+}
+
+.player-card p {
+  margin: 5px 0;
+}

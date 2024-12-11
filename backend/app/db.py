@@ -1,41 +1,37 @@
-
 import sqlite3
-import click 
+import click
 from flask import current_app, g
 from flask_sqlalchemy import SQLAlchemy
 
+# Flask-SQLAlchemy instance
 db = SQLAlchemy()
 
-def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect(
+# SQLite connection helpers (rename to avoid conflict)
+def get_sqlite_db():
+    if 'sqlite_db' not in g:
+        g.sqlite_db = sqlite3.connect(
             current_app.config['DATABASE'],
             detect_types=sqlite3.PARSE_DECLTYPES
         )
-        g.db.row_factory = sqlite3.Row
-    return g.db 
+        g.sqlite_db.row_factory = sqlite3.Row
+    return g.sqlite_db
 
+def close_sqlite_db(e=None):
+    sqlite_db = g.pop('sqlite_db', None)
 
-def close_db(e=None):
-    db = g.pop('db', None)
+    if sqlite_db is not None:
+        sqlite_db.close()
 
-    if db is not None:
-        db.close()
-        
-        
-def init_db():
-    db = get_db()
-    
+def init_sqlite_db():
+    sqlite_db = get_sqlite_db()
     with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-        
-@click.command('init-db')
-def init_db_command():
-    init_db()
-    click.echo('Initialized the database.')
-    
-    
+        sqlite_db.executescript(f.read().decode('utf8'))
+
+@click.command('init-sqlite-db')
+def init_sqlite_db_command():
+    init_sqlite_db()
+    click.echo('Initialized the SQLite database.')
+
 def init_app(app):
-    app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
-    
+    app.teardown_appcontext(close_sqlite_db)
+    app.cli.add_command(init_sqlite_db_command)

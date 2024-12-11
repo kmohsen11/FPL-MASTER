@@ -1,0 +1,104 @@
+/* General container styling */
+.container {
+  text-align: center;
+  padding: 20px;
+  background-color: #181818;
+  color: #ffffff;
+}
+
+/* Page title styling */
+h2 {
+  font-size: 32px;
+  margin-bottom: 30px;
+  color: #ffffff;
+}
+
+/* Fixtures grid layout */
+.fixtures-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 20px;
+}
+
+/* Styling for individual fixture cards */
+.fixture-card {
+  background-color: #ffffff;
+  color: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Card hover effect */
+.fixture-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Styling for team section */
+.team {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  margin: 15px 0;
+  color: black;
+}
+
+/* Styling for team logos */
+.team img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  background-color: #ffffff; /* Ensure logos have a clean background */
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Team name styling */
+.team span {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: left;
+}
+
+/* VS text styling */
+.vs {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px 0;
+  color: #000000; /* Bright yellow for emphasis */
+}
+
+/* Kickoff time styling */
+.kickoff-time {
+  font-size: 16px;
+  color: #aaaaaa; /* Subtle text color */
+  margin-top: 15px;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .fixtures-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .fixture-card {
+    width: 90%;
+  }
+}
+/* Game week section header */
+.game-week-header {
+  font-size: 24px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #ffffff; /* Bright yellow for emphasis */
+  text-align: center;
+}

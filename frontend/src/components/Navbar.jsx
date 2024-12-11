@@ -6,9 +6,9 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <Link to="/" className="logo">
+        <img src="/Users/nayeb/Desktop/FPL-MASTER/frontend/src/assets/FPL-Master_Logo.png" alt="logo" />
           Home Page
-        </Link>
+        
       </div>
       <div className="navbar-center">
         <ul className="nav-links">

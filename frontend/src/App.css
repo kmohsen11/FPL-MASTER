@@ -1,42 +1,97 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* General Reset */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9; /* Soft light background */
+  color: #333; /* Default dark text for readability */
+}
+
+/* Navigation Bar */
+nav {
+  display: flex;
+  justify-content: center;
+  background-color: #333; /* Dark gray background */
+  padding: 15px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+nav a {
+  color: white; /* White text for links */
+  text-decoration: none; /* Remove underlines */
+  margin: 0 15px; /* Space between links */
+  padding: 10px 20px; /* Add padding for clickable area */
+  background-color: #444; /* Slightly lighter background for links */
+  border-radius: 5px;
+  transition: 0.3s ease; /* Smooth hover effect */
+}
+
+nav a:hover {
+  background-color: #555; /* Highlight on hover */
+  transform: translateY(-2px); /* Pop-up effect */
+}
+
+/* Main Content Heading */
+h2 {
+  text-align: center;
+  margin: 40px 0; /* Vertical spacing */
+  font-size: 28px; /* Larger text for headings */
+  color: #222; /* Darker text for emphasis */
+}
+
+/* Content Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px); /* Adjust for full height minus nav */
+  padding: 20px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* Card Style */
 .card {
-  padding: 2em;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  text-align: center;
+  width: 80%;
+  max-width: 500px;
+  transition: 0.3s ease; /* Smooth interaction effect */
 }
 
-.read-the-docs {
-  color: #888;
+.card:hover {
+  transform: translateY(-5px); /* Lift on hover */
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  nav {
+    flex-wrap: wrap; /* Wrap links on smaller screens */
+    padding: 10px;
+  }
+
+  nav a {
+    margin: 5px 10px;
+    padding: 8px 15px;
+  }
+
+  .card {
+    width: 90%; /* Full width on smaller screens */
+  }
+
+  h2 {
+    font-size: 24px; /* Adjust heading size */
+  }
+}
+
+.navbar-logo {
+  width: 50px; /* Adjust this value to make the logo smaller or larger */
+  height: auto; /* Maintains the aspect ratio */
+  /* Optional: Add some margin or padding if needed */
+  margin: 5px;
 }
