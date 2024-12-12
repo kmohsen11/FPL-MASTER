@@ -3,21 +3,3 @@ Flask==2.3.2
 Flask-SQLAlchemy==3.0.5
 flask-cors==3.0.10
 SQLAlchemy==2.0.21
-
-# Data processing
-numpy==1.25.1
-scipy==1.11.1
-pandas==2.1.0
-joblib==1.3.2
-
-# Machine Learning and Deep Learning
-scikit-learn==1.3.0
-xgboost==1.7.6
-tensorflow==2.13.0
-keras==2.13.1
-
-# NLP and string matching
-rapidfuzz==2.15.1
-
-# Miscellaneous
-pickle-mixin==1.0.2
