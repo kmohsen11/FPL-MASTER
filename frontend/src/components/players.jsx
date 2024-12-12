@@ -1,38 +1,38 @@
-import React, { useState } from "react";
-import "./Players.css";
+import { useState } from 'react'
+import './Players.css'
 
 function Players() {
-  const [players, setPlayers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [players, setPlayers] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSearch = async () => {
-    setLoading(true);
-    setError("");
-    setPlayers([]); // Clear previous results
+    setLoading(true)
+    setError('')
+    setPlayers([]) // Clear previous results
     try {
       const response = await fetch(
         `http://127.0.0.1:5000/api/search?query=${searchTerm}`
-      );
+      )
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      const data = await response.json();
-      setPlayers(data.matches);
+      const data = await response.json()
+      setPlayers(data.matches)
     } catch (error) {
-      console.error("Error searching for players:", error);
-      setError("Failed to fetch players. Please try again.");
+      console.error('Error searching for players:', error)
+      setError('Failed to fetch players. Please try again.')
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (searchTerm.trim()) {
-      handleSearch();
+      handleSearch()
     }
-  };
+  }
 
   return (
     <div className="players-container">
@@ -66,7 +66,7 @@ function Players() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default Players;
+export default Players

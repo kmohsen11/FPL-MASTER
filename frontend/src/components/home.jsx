@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from "react";
-import "./Home.css";
+import { useState, useEffect } from 'react'
+import './Home.css'
 
 const Home = () => {
-  const [mainTeam, setMainTeam] = useState([]);
-  const [bench, setBench] = useState([]);
-  const [error, setError] = useState("");
+  const [mainTeam, setMainTeam] = useState([])
+  const [bench, setBench] = useState([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const fetchBestSquad = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/api/best-squad");
+        const response = await fetch('http://127.0.0.1:5000/api/best-squad')
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`HTTP error! Status: ${response.status}`)
         }
-        const data = await response.json();
+        const data = await response.json()
 
         // Separate main team and bench players
-        setMainTeam(data.main);
-        setBench(data.bench);
+        setMainTeam(data.main)
+        setBench(data.bench)
       } catch (error) {
-        console.error("Error fetching best squad:", error);
-        setError("Failed to fetch the best squad. Please try again.");
+        console.error('Error fetching best squad:', error)
+        setError('Failed to fetch the best squad. Please try again.')
       }
-    };
+    }
 
-    fetchBestSquad();
-  }, []);
+    fetchBestSquad()
+  }, [])
 
   return (
     <div className="home-container">
@@ -36,7 +36,7 @@ const Home = () => {
       <div className="pitch">
         <div className="position-row goalkeepers">
           {mainTeam
-            .filter((player) => player.position === "GK")
+            .filter((player) => player.position === 'GK')
             .map((player, index) => (
               <div key={index} className="player-card">
                 <h3>{player.name}</h3>
@@ -47,7 +47,7 @@ const Home = () => {
 
         <div className="position-row defenders">
           {mainTeam
-            .filter((player) => player.position === "DEF")
+            .filter((player) => player.position === 'DEF')
             .map((player, index) => (
               <div key={index} className="player-card">
                 <h3>{player.name}</h3>
@@ -58,7 +58,7 @@ const Home = () => {
 
         <div className="position-row midfielders">
           {mainTeam
-            .filter((player) => player.position === "MID")
+            .filter((player) => player.position === 'MID')
             .map((player, index) => (
               <div key={index} className="player-card">
                 <h3>{player.name}</h3>
@@ -69,7 +69,7 @@ const Home = () => {
 
         <div className="position-row forwards">
           {mainTeam
-            .filter((player) => player.position === "FWD")
+            .filter((player) => player.position === 'FWD')
             .map((player, index) => (
               <div key={index} className="player-card">
                 <h3>{player.name}</h3>
@@ -91,7 +91,7 @@ const Home = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

@@ -1,6 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "./Navbar.css";
+import { Link } from 'react-router-dom'
+import './Navbar.css'
 
 const Navbar = () => {
   return (
@@ -18,7 +17,7 @@ const Navbar = () => {
         <Link to="/contact">Contact</Link>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

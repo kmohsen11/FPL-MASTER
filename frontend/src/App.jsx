@@ -1,13 +1,11 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Home from "./components/Home";
-import Fixtures from "./components/Fixtures";
-import PreviousGames from "./components/PreviousGames";
-import Players from "./components/Players";
-import Contact from "./components/Contact";
-import "./App.css";
-import Navbar from "./components/Navbar";
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Home from './components/Home'
+import Fixtures from './components/Fixtures'
+import PreviousGames from './components/PreviousGames'
+import Players from './components/Players'
+import Contact from './components/Contact'
+import './App.css'
+import Navbar from './components/Navbar'
 
 function App() {
   return (
@@ -23,7 +21,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App
