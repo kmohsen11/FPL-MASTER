@@ -5,7 +5,7 @@ import PreviousGames from './components/PreviousGames'
 import Players from './components/players'
 import Contact from './components/contact'
 import './App.css'
-import Navbar from './components/navbar'
+import Navbar from './components/Navbar'
 
 function App() {
   return (
