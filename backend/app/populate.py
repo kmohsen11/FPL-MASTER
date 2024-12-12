@@ -1,50 +1,73 @@
-import sys
 import os
+import sys
+import requests
 import pandas as pd
+from io import StringIO
 from sqlalchemy.exc import IntegrityError
 from app.models import db, Team, Player, PlayerRoundPerformance
 from app import create_app  # Import the application factory function
+from app.update_predictions import run_pipeline  # Import the pipeline runner
 
-# Create the Flask app and set the context
-app = create_app()
+# Constants
+MERGED_GW_URL = "https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data/2024-25/gws/merged_gw.csv"
 
-# File paths for CSV files
-mid_predictions_path = "/Users/nayeb/Desktop/FPL-Model/performance/mid_highest_predictions.csv"
-gk_predictions_path = "/Users/nayeb/Desktop/FPL-Model/performance/gk_highest_predictions.csv"
-def_predictions_path = "/Users/nayeb/Desktop/FPL-Model/performance/def_highest_predictions.csv"
-fwd_predictions_path = "/Users/nayeb/Desktop/FPL-Model/performance/fwd_highest_predictions.csv"
-merged_gw_path = "/Users/nayeb/Desktop/FPL-Model/data/2024-25/gws/merged_gw.csv"
+def fetch_merged_gw():
+    """
+    Fetches the merged game week data from the provided URL.
+    """
+    response = requests.get(MERGED_GW_URL)
+    if response.status_code == 200:
+        return pd.read_csv(StringIO(response.text))
+    else:
+        raise Exception(f"Failed to fetch merged_gw.csv. HTTP Status Code: {response.status_code}")
 
-# Load the merged_gw.csv file
-merged_gw = pd.read_csv(merged_gw_path)
-
-# Function to get the full team name using player's full name
-def get_team_name_by_player_name(player_name):
+def get_team_name_by_player_name(player_name, merged_gw):
+    """
+    Get the full team name using the player's full name.
+    """
     team_row = merged_gw[merged_gw['name'] == player_name]
     return team_row['team'].values[0] if not team_row.empty else "Unknown"
 
-# Function to load and process CSV data
-def load_csv_data(filepath, position):
-    data = pd.read_csv(filepath)
-    data["position"] = position  # Add position to data
-    return data
+def clean_database():
+    """
+    Deletes all entries in the PlayerRoundPerformance, Player, and Team tables.
+    """
+    db.session.query(PlayerRoundPerformance).delete()
+    db.session.query(Player).delete()
+    db.session.query(Team).delete()
+    db.session.commit()
+    print("Database cleaned successfully.")
 
-# Load all CSV files
-mid_predictions = load_csv_data(mid_predictions_path, "MID")
-gk_predictions = load_csv_data(gk_predictions_path, "GK")
-def_predictions = load_csv_data(def_predictions_path, "DEF")
-fwd_predictions = load_csv_data(fwd_predictions_path, "FWD")
+def load_predictions():
+    """
+    Loads predictions from the pipeline and combines all data into a single DataFrame.
+    """
+    pipeline_result = run_pipeline()
+    if "error" in pipeline_result:
+        raise Exception(pipeline_result["error"])
 
-# Combine all data into one DataFrame
-all_data = pd.concat([mid_predictions, gk_predictions, def_predictions, fwd_predictions])
+    predictions_dir = "predictions"
+    files = {
+        "MID": os.path.join(predictions_dir, "mid_predictions.csv"),
+        "GK": os.path.join(predictions_dir, "gk_predictions.csv"),
+        "DEF": os.path.join(predictions_dir, "def_predictions.csv"),
+        "FWD": os.path.join(predictions_dir, "fwd_predictions.csv"),
+    }
 
-# Start populating the database
-def populate_database(data):
+    def load_csv(filepath, position):
+        data = pd.read_csv(filepath)
+        data["position"] = position
+        return data
+
+    return pd.concat([load_csv(path, pos) for pos, path in files.items()])
+
+def populate_database(data, merged_gw):
+    """
+    Populates the database with predictions.
+    """
     for _, row in data.iterrows():
-        # Get the full team name using player's full name
-        team_name = get_team_name_by_player_name(row["decoded_name"])
+        team_name = get_team_name_by_player_name(row["decoded_name"], merged_gw)
 
-        # Check if the team exists, if not create it
         team = Team.query.filter_by(name=team_name).first()
         if not team:
             team = Team(name=team_name)
@@ -54,7 +77,6 @@ def populate_database(data):
             except IntegrityError:
                 db.session.rollback()
 
-        # Check if the player exists, if not create them
         player = Player.query.filter_by(web_name=row["decoded_name"]).first()
         if not player:
             player = Player(
@@ -70,13 +92,12 @@ def populate_database(data):
             except IntegrityError:
                 db.session.rollback()
 
-        # Add performance data
         performance = PlayerRoundPerformance(
             player_id=player.id,
-            season="2024-25",  # Assuming a fixed season for now
-            round=1,  # Placeholder; adjust as needed
+            season="2024-25",
+            round=1,
             predicted_points=row["predicted_points_after"],
-            opponent_team_id=team.id,  # Placeholder; adjust with actual opponent data
+            opponent_team_id=team.id,
         )
         db.session.add(performance)
         try:
@@ -84,6 +105,17 @@ def populate_database(data):
         except IntegrityError:
             db.session.rollback()
 
-# Run the script within the Flask application context
-with app.app_context():
-    populate_database(all_data)
+if __name__ == "__main__":
+    app = create_app()
+
+    with app.app_context():
+        
+        print("Fetching merged game week data...")
+        merged_gw = fetch_merged_gw()
+        print("Cleaning the database...")
+        clean_database()
+        print("Running the prediction pipeline...")
+        predictions_data = load_predictions()
+        print("Populating the database with new predictions...")
+        populate_database(predictions_data, merged_gw)
+        print("Database population completed.")

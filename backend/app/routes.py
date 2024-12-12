@@ -7,6 +7,8 @@ from collections import Counter
 from scipy.optimize import linprog
 from rapidfuzz import process  # Import for fuzzy string matching
 
+from app.populate import fetch_merged_gw, clean_database, load_predictions, populate_database  
+
 # Create a Blueprint for the API
 api = Blueprint('api', __name__)
 
@@ -129,3 +131,17 @@ def optimize_squad(players, squad_constraints):
                 bench_squad.append(player)
                 
     return {"main": main_squad, "bench": bench_squad}
+
+
+
+@api.route('/new_predictions', methods=['GET'])
+def new_predictions_info():
+    """
+    Endpoint to get the status of the prediction pipeline schedule.
+    """
+    try:
+        from app import update_predictions
+        # Provide information about the schedule
+        return jsonify({"message": "Predictions are scheduled to run every Monday night at 11 PM."}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
