@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './components/home'
 import Fixtures from './components/fixtures'
-import PreviousGames from './components/previousGames'
+import PreviousGames from './components/PreviousGames'
 import Players from './components/players'
 import Contact from './components/contact'
 import './App.css'
