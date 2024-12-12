@@ -1,20 +1,19 @@
 {
     "version": 2,
-    "projects": [
+    "builds": [
       {
-        "src": "./frontend",
-        "buildCommand": "npm run build",
-        "outputDirectory": "build"
+        "src": "backend/app.py",
+        "use": "@vercel/python"
       },
       {
-        "src": "./backend",
-        "use": "@vercel/python",
-        "buildCommand": "pip install -r requirements.txt",
-        "outputDirectory": "."
+        "src": "frontend/package.json",
+        "use": "@vercel/static-build",
+        "config": { "distDir": "build" }
       }
     ],
-    "rewrites": [
-      { "source": "/api/(.*)", "destination": "/backend/$1" }
+    "routes": [
+      { "src": "/api/(.*)", "dest": "backend/app.py" },
+      { "src": "/(.*)", "dest": "frontend/build/$1" }
     ]
   }
   
