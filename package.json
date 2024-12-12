@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "express": "^4.21.2",
-    "http-proxy-middleware": "^2.0.6"
+    "http-proxy-middleware": "^2.0.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "engines": {
     "node": ">=16.x"
@@ -20,8 +22,10 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.26.3"
   },
-
   "babel": {
-    "presets": ["@babel/preset-env", "@babel/preset-react"]
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
   }
 }
