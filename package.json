@@ -1,17 +1,15 @@
 {
   "name": "proxy",
   "version": "1.0.0",
-  "main": "main.jsx",
+  "main": "frontend/main.jsx",
   "scripts": {
-    "start": "node backend/run.py",
+    "start": "node frontend/main.jsx",
     "build": "cd frontend && npm install && npm run build",
     "heroku-postbuild": "npm run build"
-},
+  },
   "dependencies": {
-    "axios": "^1.7.9",
-    "cors": "^2.8.5",
     "express": "^4.21.2",
-    "serve": "^14.2.4"
+    "http-proxy-middleware": "^2.0.6"
   },
   "engines": {
     "node": ">=16.x"
