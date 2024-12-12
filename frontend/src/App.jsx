@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './components/home'
-import Fixtures from './components/fixtures'
+import Home from './components/Home'
+import Fixtures from './components/Fixtures'
 import PreviousGames from './components/PreviousGames'
-import Players from './components/players'
-import Contact from './components/contact'
+import Players from './components/Players'
+import Contact from './components/Contact'
 import './App.css'
 import Navbar from './components/Navbar'
 

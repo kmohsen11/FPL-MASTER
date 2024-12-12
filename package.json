@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "frontend/src/main.jsx",
   "scripts": {
-    "start": "node frontend/src/main.jsx",
-    "build": "cd frontend && npm install && npm run build",
+    "start": "node dist/main.js",
+    "build": "babel frontend/src --out-dir dist",
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
@@ -13,5 +13,11 @@
   },
   "engines": {
     "node": ">=16.x"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.26.4",
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3"
   }
 }
