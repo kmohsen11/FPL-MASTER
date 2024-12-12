@@ -1,14 +1,15 @@
-from flask import Flask, send_from_directory
 from flask_cors import CORS
 
 def create_app():
-    app = Flask(__name__, static_folder="../frontend/dist", static_url_path="")  # Serve React frontend
-
+    app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Dynamically configure CORS for API routes
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # Dynamically configure CORS   # Allow all origins for Heroku deployment
+    
+    CORS(app, resources = {r"/api/*": {"origins": "*"}})
+    
+    
 
     # Initialize database and register blueprints
     from app.models import db
@@ -19,16 +20,4 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-    # Serve React frontend
-    @app.route("/", defaults={"path": ""})
-    @app.route("/<path:path>")
-    def serve_react_frontend(path):
-        if path and path.startswith("api"):  # Don't serve React for API calls
-            return "API Endpoint", 404
-        elif path and path != "index.html":
-            return send_from_directory(app.static_folder, path)
-        else:
-            return send_from_directory(app.static_folder, "index.html")
-
     return app
-
