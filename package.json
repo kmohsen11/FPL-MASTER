@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "main.jsx",
   "scripts": {
-    "heroku-postbuild": "cd client && npm install && npm run build"
-  },
+    "start": "node backend/run.py",
+    "build": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "npm run build"
+},
   "dependencies": {
     "axios": "^1.7.9",
     "cors": "^2.8.5",
