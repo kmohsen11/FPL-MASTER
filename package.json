@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node main.js",
+    "start": "node main.jsx",
     "build": "cd frontend && npm install && npm run build",
     "heroku-postbuild": "npm run build"
   },
