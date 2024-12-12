@@ -6,21 +6,14 @@ import PreviousGames from "./components/PreviousGames";
 import Players from "./components/Players";
 import Contact from "./components/Contact";
 import "./App.css";
+import Navbar from "./components/Navbar";
+
 
 function App() {
   return (
     <Router>
+      <Navbar />
       <div>
-        <nav className="navbar">
-          <img src="./src/assets/FPL-Master_Logo.png" alt= "FPL-Master Logo" className="navbar-logo" />
-          <div className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/fixtures">Fixtures</Link>
-            <Link to="/previous-games">Previous Games</Link>
-            <Link to="/players">Players</Link>
-            <Link to="/contact">Contact</Link>
-          </div>
-        </nav>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/fixtures" element={<Fixtures />} />

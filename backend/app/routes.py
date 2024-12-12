@@ -6,7 +6,7 @@ import numpy as np
 from collections import Counter
 from scipy.optimize import linprog
 from rapidfuzz import process  # Import for fuzzy string matching
-
+import schedule
 from app.populate import fetch_merged_gw, clean_database, load_predictions, populate_database  
 
 # Create a Blueprint for the API
@@ -134,14 +134,51 @@ def optimize_squad(players, squad_constraints):
 
 
 
+
 @api.route('/new_predictions', methods=['GET'])
 def new_predictions_info():
     """
     Endpoint to get the status of the prediction pipeline schedule.
     """
     try:
-        from app import update_predictions
-        # Provide information about the schedule
-        return jsonify({"message": "Predictions are scheduled to run every Monday night at 11 PM."}), 200
+        # Fetch scheduled jobs
+        jobs = schedule.get_jobs()
+        if jobs:
+            # Get the next scheduled run time
+            next_run = jobs[0].next_run.isoformat() if jobs[0].next_run else "Not scheduled"
+            return jsonify({"message": "Prediction pipeline is scheduled.", "next_run": next_run}), 200
+        else:
+            return jsonify({"message": "No prediction pipeline is currently scheduled.", "next_run": None}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error in /new_predictions: {e}")
+        return jsonify({"error": "Failed to get next prediction run time"}), 500
+
+
+@api.route('/run_new_predictions', methods=['POST'])
+def run_new_predictions():
+    """
+    Endpoint to manually run the prediction pipeline.
+    """
+    try:
+        from app.update_predictions import run_pipeline  # Import the pipeline function
+
+        # Run the pipeline and update the database
+        print("Starting the prediction pipeline...")
+        result = run_pipeline()
+        if "error" in result:
+            raise Exception(result["error"])
+
+        # Fetch the merged game week data and populate the database
+        print("Fetching game week data...")
+        merged_gw = fetch_merged_gw()
+        print("Cleaning the database...")
+        clean_database()
+        print("Loading predictions...")
+        predictions_data = load_predictions()
+        print("Populating the database...")
+        populate_database(predictions_data, merged_gw)
+
+        return jsonify({"message": "Prediction pipeline executed and database updated successfully."}), 200
+    except Exception as e:
+        print(f"Error in /run_new_predictions: {e}")
+        return jsonify({"error": f"Failed to run prediction pipeline: {str(e)}"}), 500

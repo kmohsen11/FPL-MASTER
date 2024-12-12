@@ -105,17 +105,4 @@ def populate_database(data, merged_gw):
         except IntegrityError:
             db.session.rollback()
 
-if __name__ == "__main__":
-    app = create_app()
 
-    with app.app_context():
-        
-        print("Fetching merged game week data...")
-        merged_gw = fetch_merged_gw()
-        print("Cleaning the database...")
-        clean_database()
-        print("Running the prediction pipeline...")
-        predictions_data = load_predictions()
-        print("Populating the database with new predictions...")
-        populate_database(predictions_data, merged_gw)
-        print("Database population completed.")

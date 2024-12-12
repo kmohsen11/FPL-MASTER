@@ -1,29 +1,22 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Navbar.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <div className="navbar-left">
-        <img src="/Users/nayeb/Desktop/FPL-MASTER/frontend/src/assets/FPL-Master_Logo.png" alt="logo" />
-          Home Page
-        
+      <img
+        src="./src/assets/FPL-Master_Logo.png"
+        alt="FPL-Master Logo"
+        className="navbar-logo"
+      />
+      <div className="navbar-links">
+        <Link to="/">Home</Link>
+        <Link to="/fixtures">Fixtures</Link>
+        <Link to="/previous-games">Previous Games</Link>
+        <Link to="/players">Players</Link>
+        <Link to="/contact">Contact</Link>
       </div>
-      <div className="navbar-center">
-        <ul className="nav-links">
-          <li>
-            <Link to="/fixtures">Fixtures</Link>
-          </li>
-          <li>
-            <Link to="/players">All Players</Link>
-          </li>
-          <li>
-            <Link to="/contact">Contact-Us</Link>
-          </li>
-        </ul>
-      </div>
-      
     </nav>
   );
 };
