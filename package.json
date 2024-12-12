@@ -1,20 +1,17 @@
 {
-  "name": "backend",
+  "name": "proxy",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "main.jsx",
   "scripts": {
-    "start": "node main.jsx",
-    "build": "cd frontend && npm install && npm run build",
-    "heroku-postbuild": "npm run build"
+    "start": "node main.jsx"
   },
   "dependencies": {
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "fpl-api": "^4.0.4",
     "serve": "^14.2.4"
   },
   "engines": {
-  "node": ">=16.x"
-}
+    "node": ">=16.x"
+  }
 }

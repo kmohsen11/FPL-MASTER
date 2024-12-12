@@ -1,3 +1,4 @@
+from flask import Flask
 from flask_cors import CORS
 
 def create_app():
@@ -5,11 +6,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Dynamically configure CORS   # Allow all origins for Heroku deployment
-    
-    CORS(app, resources = {r"/api/*": {"origins": "*"}})
-    
-    
+    # Dynamically configure CORS
+    CORS(app, resources={r"/api/*": {"origins": "*"}})  # Allow all origins for Heroku
 
     # Initialize database and register blueprints
     from app.models import db

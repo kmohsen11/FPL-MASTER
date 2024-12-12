@@ -1,1 +1,3 @@
-web: gunicorn backend.run:app
+web: python backend/run.py
+proxy: node frontend/proxy.js
+web: npm start
