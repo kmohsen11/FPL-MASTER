@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './components/home'
-import Fixtures from './components/Fixtures'
-import PreviousGames from './components/PreviousGames'
-import Players from './components/Players'
-import Contact from './components/Contact'
+import Fixtures from './components/fixtures'
+import PreviousGames from './components/previousGames'
+import Players from './components/players'
+import Contact from './components/contact'
 import './App.css'
-import Navbar from './components/Navbar'
+import Navbar from './components/navbar'
 
 function App() {
   return (
