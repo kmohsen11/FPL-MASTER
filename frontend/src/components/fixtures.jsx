@@ -1,6 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import './Fixtures.css'
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000"
+
 function Fixtures() {
   const [fixtures, setFixtures] = useState([])
   const [loading, setLoading] = useState(true)
@@ -54,12 +56,10 @@ function Fixtures() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fixturesResponse = await fetch(
-          'http://localhost:4000/api/fixtures'
-        )
+        const fixturesResponse = await fetch(`${API_BASE_URL}/api/fixtures`)
         const fixturesData = await fixturesResponse.json()
 
-        const teamsResponse = await fetch('http://localhost:4000/api/teams')
+        const teamsResponse = await fetch(`${API_BASE_URL}/api/teams`)
         const teamsData = await teamsResponse.json()
 
         const teamMapping = {}
@@ -92,57 +92,47 @@ function Fixtures() {
     fetchData()
   }, [teamLogos]) // Include teamLogos as a dependency
 
-  // Group fixtures by game week
-  const groupedFixtures = fixtures.reduce((acc, fixture) => {
-    const { event } = fixture // Game week number
-    if (!acc[event]) {
-      acc[event] = []
-    }
-    acc[event].push(fixture)
-    return acc
-  }, {})
-
-  if (loading) {
-    return <div className="container">Loading fixtures...</div>
-  }
-
-  if (!fixtures || fixtures.length === 0) {
-    return (
-      <div className="container">
-        <h2>Upcoming Premier League Fixtures</h2>
-        <p>No fixtures available.</p>
-      </div>
-    )
-  }
-
-  return (
+  return loading ? (
+    <div className="container">Loading fixtures...</div>
+  ) : (
     <div className="container">
       <h2>Upcoming Premier League Fixtures</h2>
-      {Object.entries(groupedFixtures).map(([gameWeek, fixtures]) => (
-        <div key={gameWeek}>
-          <h3 className="game-week-header">Game Week {gameWeek}</h3>
-          <div className="fixtures-grid">
-            {fixtures.map((fixture) => (
-              <div className="fixture-card" key={fixture.id}>
-                <div className="team">
-                  <img src={fixture.team_h.logo} alt={fixture.team_h.name} />
-                  <span>{fixture.team_h.name}</span>
+      {fixtures.length === 0 ? (
+        <p>No fixtures available.</p>
+      ) : (
+        Object.entries(
+          fixtures.reduce((acc, fixture) => {
+            const { event } = fixture // Game week number
+            if (!acc[event]) acc[event] = []
+            acc[event].push(fixture)
+            return acc
+          }, {})
+        ).map(([gameWeek, fixtures]) => (
+          <div key={gameWeek}>
+            <h3 className="game-week-header">Game Week {gameWeek}</h3>
+            <div className="fixtures-grid">
+              {fixtures.map((fixture) => (
+                <div className="fixture-card" key={fixture.id}>
+                  <div className="team">
+                    <img src={fixture.team_h.logo} alt={fixture.team_h.name} />
+                    <span>{fixture.team_h.name}</span>
+                  </div>
+                  <div className="vs">VS</div>
+                  <div className="team">
+                    <img src={fixture.team_a.logo} alt={fixture.team_a.name} />
+                    <span>{fixture.team_a.name}</span>
+                  </div>
+                  <p className="kickoff-time">
+                    {fixture.kickoff_time
+                      ? new Date(fixture.kickoff_time).toLocaleString()
+                      : 'Kickoff time TBD'}
+                  </p>
                 </div>
-                <div className="vs">VS</div>
-                <div className="team">
-                  <img src={fixture.team_a.logo} alt={fixture.team_a.name} />
-                  <span>{fixture.team_a.name}</span>
-                </div>
-                <p className="kickoff-time">
-                  {fixture.kickoff_time
-                    ? new Date(fixture.kickoff_time).toLocaleString()
-                    : 'Kickoff time TBD'}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   )
 }
