@@ -4,7 +4,7 @@ import Fixtures from './components/Fixtures_page';
 import PreviousGames from './components/PreviousGames_page';
 import Players from './components/Players_page';
 import Contact from './components/Contact_page';
-import './App.css';
+import './App_style.css';
 import Navbar from './components/Navbar_page';
 
 function App() {

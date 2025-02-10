@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import "./Home.css";
+import "./Home_style.css";
 
 const Home = () => {
   const [mainTeam, setMainTeam] = useState([]);

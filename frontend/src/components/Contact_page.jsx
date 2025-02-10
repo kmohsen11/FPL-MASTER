@@ -1,4 +1,4 @@
-import "./Contact.css";
+import "./Contact_style.css";
 const Contact = () => {
   return (
     <div className="contact-container">
