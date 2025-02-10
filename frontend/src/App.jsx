@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/Home_page';
-import Fixtures from './components/Fixtures';
+import Fixtures from './components/Fixtures_page';
 import PreviousGames from './components/PreviousGames_page';
 import Players from './components/Players_page';
 import Contact from './components/Contact_page';
