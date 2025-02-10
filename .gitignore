@@ -13,3 +13,10 @@ dist/
 
 node_modules/
 
+#ignore data files and predictions 
+data/
+datasets/
+predictions/
+*.csv
+*.json
+*.xlsx 

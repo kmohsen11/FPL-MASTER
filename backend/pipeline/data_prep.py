@@ -26,16 +26,25 @@ class DataHandler:
         self.data["team_mapping"] = pd.read_csv("pipeline/teams.csv")
         
     def fetch_new_data(self):
-        
+        """Fetch and validate the latest gameweek data from the 2024-25 season"""
         url = "https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data/2024-25/gws/merged_gw.csv"
         
         response = requests.get(url)
-        
         if response.status_code == 200:
-            self.data["new_data"] = pd.read_csv(StringIO(response.text))
-            print("Fetched and loaded data successfully.")
+            self.data["new_data"] = pd.read_csv(
+                StringIO(response.text), 
+                delimiter=',', 
+                header=0, 
+                usecols=range(42)
+            )
+
+            # ✅ Debugging: Ensure new gameweeks are included
+            latest_gameweeks = self.data["new_data"]["round"].unique()
+            print(f"✅ Latest Gameweeks Fetched: {sorted(latest_gameweeks)}")
+
         else:
-            raise Exception(f"Failed to fetch the file. HTTP Status Code: {response.status_code}")
+            raise Exception(f"❌ Failed to fetch the file. HTTP Status Code: {response.status_code}")
+
     def merge_opponent(self):
         # Merge new_data with team_mapping
         merged_gw = self.data['new_data'].merge(
@@ -74,26 +83,30 @@ class DataHandler:
 
 
     
+    
     def merge_columns(self):
         try:
+            # ✅ Ensure 'season_x' exists in new_data before merging
+            self.data["new_data"]["season_x"] = "2024-25"
+
             # Remove duplicate columns in new_data and merged_gw
             self.data["new_data"] = self.data["new_data"].loc[:, ~self.data["new_data"].columns.duplicated()]
             merged_gw = self.merge_opponent()
             merged_gw = merged_gw.loc[:, ~merged_gw.columns.duplicated()]
-            
-            print("new_data columns:", self.data["new_data"].columns)
-            print("merged_gw columns after deduplication:", merged_gw.columns)
 
-            # Ensure `position` exists in new_data and merged_gw
+            print("✅ new_data columns:", self.data["new_data"].columns)
+            print("✅ merged_gw columns after deduplication:", merged_gw.columns)
+
+            # Ensure `position` exists in both datasets
             if "position" not in self.data["new_data"].columns:
-                raise Exception("The 'position' column is missing in `new_data`.")
+                raise Exception("❌ The 'position' column is missing in `new_data`.")
             if "position" not in merged_gw.columns:
-                raise Exception("The 'position' column is missing in `merged_gw`.")
+                raise Exception("❌ The 'position' column is missing in `merged_gw`.")
 
-            # Align column names between new_data and merged_gw
-            if not set(self.data["new_data"].columns).issubset(set(merged_gw.columns)):
-                missing_columns = set(self.data["new_data"].columns) - set(merged_gw.columns)
-                raise Exception(f"Missing columns in merged data: {missing_columns}")
+            # Ensure both datasets have the same columns
+            missing_columns = set(self.data["new_data"].columns) - set(merged_gw.columns)
+            if missing_columns:
+                raise Exception(f"❌ Missing columns in merged data: {missing_columns}")
 
             merged_gw = merged_gw[self.data["new_data"].columns]
 
@@ -104,24 +117,33 @@ class DataHandler:
             # Combine new_data and merged_gw
             combined_data = pd.concat([self.data["new_data"], merged_gw], ignore_index=True)
 
-            # Add `season_x` and rename `total_points` to `points`
-            combined_data["season_x"] = "2024-25"
+            # ✅ Ensure latest round for each player is kept
+            combined_data = combined_data.sort_values(by=['element', 'season_x', 'round'], ascending=[True, True, False])
+            combined_data = combined_data.drop_duplicates(subset=['element', 'season_x', 'round'], keep='first')
+
+            # ✅ Rename `total_points` to `points`
             combined_data.rename(columns={"total_points": "points"}, inplace=True)
             self.data["general"].rename(columns={"total_points": "points"}, inplace=True)
 
-            # Align columns between combined_data and general
+            # ✅ Align columns between combined_data and general
             all_columns = list(set(combined_data.columns).union(set(self.data["general"].columns)))
             combined_data = combined_data.reindex(columns=all_columns)
             self.data["general"] = self.data["general"].reindex(columns=all_columns)
 
-            # Concatenate general and combined_data into unified_data
+            # ✅ Concatenate general and combined_data into unified_data
             unified_data = pd.concat([self.data["general"], combined_data], ignore_index=True)
 
-            print("Data merged successfully with columns:", unified_data.columns)
+            # ✅ Final Debugging: Print latest rounds in data
+            latest_gameweeks = unified_data.groupby("season_x")["round"].max().to_dict()
+            print(f"✅ Latest gameweek per season: {latest_gameweeks}")
+
+            print(f"✅ Data merged successfully with {len(unified_data)} records and columns:", unified_data.columns)
             return unified_data
+
         except Exception as e:
-            print(f"Error during column merging: {e}")
+            print(f"❌ Error during column merging: {e}")
             raise
+
 
     
     def process_unified_data(self):
@@ -206,7 +228,8 @@ class DataHandler:
         # Step 1: Filter data from the 2018-2019 season onwards
         df = df[df['season_x'].isin(['2018-19', '2019-20', '2020-21', '2021-22', '2022-23', '2023-24', '2024-25'])]
         df.rename(columns={"total_points": "points"})
-        df['was_home'] = df['was_home'].astype(int)
+        df['was_home'] = df['was_home'].map({True: 1, False: 0})
+
         df["points"] = df["points"].apply(lambda x: max(x, 0))
         df['points_after'] = df.groupby('element')['points'].shift(-1)
         df['points_after'] = df['points_after'].fillna(0)
@@ -258,7 +281,7 @@ class DataHandler:
         # fit the encoders during data prep
         self.data["positions"]["gk"]["team"] = team_encoder.fit_transform(self.data["positions"]["gk"]["team"])
         self.data["positions"]["def"]["team"] = team_encoder.transform(self.data["positions"]["def"]["team"])
-        self.data["positions"]["mid"]["team"] = team_encoder.transform.self.data["positions"]["mid"]["team"])
+        self.data["positions"]["mid"]["team"] = team_encoder.transform(self.data["positions"]["mid"]["team"])
         self.data["positions"]["fwd"]["team"] = team_encoder.transform(self.data["positions"]["fwd"]["team"])
         
         self.data["positions"]["gk"]["opponent_team"] = opp_team_encoder.fit_transform(self.data["positions"]["gk"]["opponent_team"])
@@ -280,29 +303,26 @@ class DataHandler:
         
     def get_last_round(self):
         def get_last_round_data(df):
-            # Sort by player (element) and round
-            df = df.sort_values(by=['element', 'round'])
-            # Keep only the last round for each player
-            last_round_data = df.groupby('element').tail(1)
+            # Sort by player (element) and round (descending)
+            df = df.sort_values(by=['element', 'round'], ascending=[True, False])
+            # Keep only the latest gameweek per player
+            last_round_data = df.groupby('element').head(1)
             return last_round_data
 
-        # Ensure season_x exists and is of the correct type
+        # Ensure `season_x` exists and is correctly formatted
         for position in ["gk", "def", "mid", "fwd"]:
             if "season_x" not in self.data["positions"][position].columns:
                 raise ValueError(f"Missing 'season_x' in {position} data.")
             self.data["positions"][position]["season_x"] = self.data["positions"][position]["season_x"].astype(str)
 
         # Filter data for the 2024-25 season
-        gk_2024_5 = self.data["positions"]["gk"]["season_x"] == "2024-25"
-        def_2024_5 = self.data["positions"]["def"]["season_x"] == "2024-25"
-        mid_2024_5 = self.data["positions"]["mid"]["season_x"] == "2024-25"
-        fwd_2024_5 = self.data["positions"]["fwd"]["season_x"] == "2024-25"
+        for position in ["gk", "def", "mid", "fwd"]:
+            position_data = self.data["positions"][position]
+            filtered_data = position_data[position_data["season_x"] == "2024-25"]
+            self.last_round[position] = get_last_round_data(filtered_data)
 
-        # Apply the filtering and get the last round data
-        self.last_round["gk"] = get_last_round_data(self.data["positions"]["gk"][gk_2024_5])
-        self.last_round["def"] = get_last_round_data(self.data["positions"]["def"][def_2024_5])
-        self.last_round["mid"] = get_last_round_data(self.data["positions"]["mid"][mid_2024_5])
-        self.last_round["fwd"] = get_last_round_data(self.data["positions"]["fwd"][fwd_2024_5])
+        print("✅ Successfully extracted last round data for all positions.")
+
 
         
     def extra_pos_process(self):

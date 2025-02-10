@@ -19,6 +19,11 @@ def schedule_pipeline():
 
 if __name__ == "__main__":
     logger.info("Scheduler started. The pipeline will run every Monday night at 11 PM.")
+
+    # Run pipeline immediately for testing
+    logger.info("Running pipeline now for testing...")
+    run_pipeline()  # ✅ Trigger pipeline immediately
+
     try:
         schedule_pipeline()
     except KeyboardInterrupt:

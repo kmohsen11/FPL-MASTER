@@ -41,6 +41,27 @@ h2 {
   width: 120px;
 }
 
+/* Position-Specific Styling */
+.goalkeeper {
+  background-color: #ffd700;
+  border: 2px solid #b8860b;
+}
+
+.defender {
+  background-color: #add8e6;
+  border: 2px solid #4682b4;
+}
+
+.midfielder {
+  background-color: #90ee90;
+  border: 2px solid #006400;
+}
+
+.forward {
+  background-color: #ff6b6b;
+  border: 2px solid #8b0000;
+}
+
 .bench {
   display: flex;
   justify-content: center;

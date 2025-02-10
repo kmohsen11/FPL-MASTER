@@ -8,75 +8,140 @@ from scipy.optimize import linprog
 from rapidfuzz import process  # Import for fuzzy string matching
 import schedule
 from app.populate import fetch_merged_gw, clean_database, load_predictions, populate_database  
+import requests
+from bs4 import BeautifulSoup
+#import squads from pipeline
+# from app.pipeline import squads
+import json
+import os
+
+# Set the correct path to the squads.json file
+SQUAD_FILE = os.path.join(os.path.dirname(__file__), "squads.json")
 
 # Create a Blueprint for the API
 api = Blueprint('api', __name__)
 
-#search for players
+def load_squads():
+    """Load squads from JSON file if it exists."""
+    if os.path.exists(SQUAD_FILE):
+        with open(SQUAD_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    print("❌ squads.json not found!")
+    return {}  # Return an empty dictionary if file does not exist
+
+# Load squads at server startup
+squads = load_squads()
+
+
+@api.route('/squads', methods=['GET'])
+def get_all_squads():
+    """Return the cached Premier League squads."""
+    return jsonify(squads)
+
 @api.route('/search', methods=['GET'])
 def search_players():
     try:
-        # Get query parameter
         query = request.args.get('query')
 
-        # Fetch all players
-        players = Player.query.all()
+        # Fetch all players from the database
+        players = Player.query.options(joinedload(Player.round_performances)).all()
 
         # Extract player names and points
-        player_data = [{"name": player.web_name, "points": max(
-            [performance.predicted_points for performance in player.round_performances], default=0)} for player in players]
+        player_data = [
+            {
+                "name": player.web_name,
+                "team": player.team.name if player.team else "Unknown",
+                "points": max([performance.predicted_points for performance in player.round_performances], default=0)
+            }
+            for player in players
+        ]
 
         # Use fuzzy string matching to find close matches
-        matches = process.extract(query, [player["name"] for player in player_data], limit=10)
+        matches = process.extract(query, [p["name"] for p in player_data], limit=10)
 
-        # Combine matches with their points
-        results = [{"name": match[0], "points": next(
-            (p["points"] for p in player_data if p["name"] == match[0]), 0)} for match in matches]
+        # Return top matches with predicted points
+        results = [{"name": match[0], "points": next(p["points"] for p in player_data if p["name"] == match[0])} for match in matches]
 
         return jsonify({"matches": results})
 
     except Exception as e:
-        print(f"Error in /api/search: {e}")
+        print(f"Error in /search: {e}")
         return jsonify({"error": "Failed to fetch players"}), 500
-
 
 @api.route('/best-squad', methods=['GET'])
 def get_best_squad():
+    """Fetch the best squad based purely on predicted points and positions (no validity checks)."""
     try:
-        # Fetch all players and prepare optimization data
+        print("🔍 Fetching best squad...")
+
+        # ✅ Position Mapping (Convert number-based positions)
+        POSITION_MAP = {"GK": "GK", "DEF": "DEF", "MID": "MID", "FWD": "FWD"}
+        # ✅ Fetch all players with predicted points
         players = Player.query.options(joinedload(Player.round_performances)).all()
-        data = [
+        print(f"✅ Total players fetched: {len(players)}")
+
+        # ✅ Extract player details **without checking validity**
+        all_players = [
             {
                 "id": player.id,
                 "name": player.web_name,
-                "team": player.team.name if player.team else None,
-                "position": player.position,
+                "team": player.team.name if player.team else "Unknown",
+                "position": POSITION_MAP.get(player.position, "UNK"),  # Convert positions
                 "predicted_points": max([p.predicted_points for p in player.round_performances], default=0)
             }
             for player in players
         ]
 
-        # Define FPL constraints
-        squad_constraints = {
-            "GK": 2,
-            "DEF": 5,
-            "MID": 5,
-            "FWD": 3,
-            "max_team_players": 3,
-        }
+        # ✅ Sort players by predicted points (highest first)
+        sorted_players = sorted(all_players, key=lambda x: x["predicted_points"], reverse=True)
+        print(f"✅ Players sorted by predicted points: {sorted_players[:3]}")
+        # ✅ **Categorize Players**
+        goalkeepers = [p for p in sorted_players if p["position"] == "GK"]
+        defenders = [p for p in sorted_players if p["position"] == "DEF"]
+        midfielders = [p for p in sorted_players if p["position"] == "MID"]
+        forwards = [p for p in sorted_players if p["position"] == "FWD"]
 
-        # Optimize squad
-        best_squad = optimize_squad(data, squad_constraints)
+        print(f"🧤 GK: {len(goalkeepers)}, 🛡️ DEF: {len(defenders)}, ⚡ MID: {len(midfielders)}, 🔥 FWD: {len(forwards)}")
 
-        return jsonify(best_squad)
+        # ✅ **Ensure correct squad formation (15 players total)**
+        selected_gk = goalkeepers[:2]  # **Top 2 GKs**
+        selected_def = defenders[:5]   # **Top 5 DEF**
+        selected_mid = midfielders[:5] # **Top 5 MID**
+        selected_fwd = forwards[:3]    # **Top 3 FWD**
+
+        # ✅ **Starting XI (11 players)**
+        main_squad = [
+            selected_gk[0],  # **1 GK in starting XI**
+            *selected_def[:4],  # **4 Defenders**
+            *selected_mid[:4],  # **4 Midfielders**
+            *selected_fwd[:2],  # **2 Forwards**
+        ]
+
+        # ✅ **Bench (4 Players)**
+        bench = [
+            selected_gk[1],  # **Backup GK**
+            selected_def[4],  # **1 extra Defender**
+            selected_mid[4],  # **1 extra Midfielder**
+            selected_fwd[2],  # **1 extra Forward**
+        ]
+
+        return jsonify({"main": main_squad, "bench": bench})
 
     except Exception as e:
-        print(f"Error in /best-squad: {e}")
-        return jsonify({"error": "Failed to fetch best squad"}), 500
+        print(f"❌ Error in /best-squad: {str(e)}")
+        return jsonify({"error": f"Failed to fetch best squad: {str(e)}"}), 500
+
 
 def optimize_squad(players, squad_constraints):
     # Player data
     predicted_points = np.array([p["predicted_points"] for p in players])
+
+    # ✅ Ensure it's a 1D array
+    predicted_points = predicted_points.flatten()
+
+    # Check the shape of predicted_points before passing to linprog
+    print(f"Shape of predicted_points: {predicted_points.shape}")  # Debugging
+
     positions = [p["position"] for p in players]
     teams = [p["team"] for p in players]
 
@@ -101,38 +166,51 @@ def optimize_squad(players, squad_constraints):
         A.append([1 if teams[i] == team else 0 for i in range(num_players)])
         b.append(squad_constraints["max_team_players"])
 
-    # Decision variables (binary: 1 if selected, 0 otherwise)
+    # Convert A and b into NumPy arrays and ensure their shapes match
+    A = np.array(A, dtype=np.float64)
+    b = np.array(b, dtype=np.float64)
+
+    # ✅ Ensure bounds are formatted correctly
     bounds = [(0, 1) for _ in range(num_players)]
+
+    # ✅ Ensure A_ub and b_ub have matching dimensions
+    print(f"A.shape: {A.shape}, b.shape: {b.shape}")  # Debugging
+
+    # ✅ Fix for A_ub shape mismatch (transpose if needed)
+    if A.shape[1] != num_players:
+        A = A.T
 
     # Linear programming: maximize predicted points
     result = linprog(-predicted_points, A_ub=A, b_ub=b, bounds=bounds, method="highs")
 
-    # Parse results
-    selected_indices = [i for i in range(num_players) if result.x[i] > 0.5]
-    selected_players = [players[i] for i in selected_indices]
+    # Check if optimization succeeded
+    if result.success:
+        selected_indices = [i for i in range(num_players) if result.x[i] > 0.5]
+        selected_players = [players[i] for i in selected_indices]
 
-    # Ensure one GK is main and one is bench
-    goalkeepers = [p for p in selected_players if p["position"] == "GK"]
-    if len(goalkeepers) == 2:
-        goalkeepers.sort(key=lambda x: x["predicted_points"], reverse=True)
-        main_gk = goalkeepers[0]
-        bench_gk = goalkeepers[1]
+        # Ensure one GK is main and one is bench
+        goalkeepers = [p for p in selected_players if p["position"] == "GK"]
+        if len(goalkeepers) == 2:
+            goalkeepers.sort(key=lambda x: x["predicted_points"], reverse=True)
+            main_gk = goalkeepers[0]
+            bench_gk = goalkeepers[1]
+        else:
+            raise ValueError("Invalid GK selection. Ensure exactly 2 GKs are selected.")
+
+        # Split main and bench players
+        main_squad = [main_gk]
+        bench_squad = [bench_gk]
+        for player in selected_players:
+            if player["position"] != "GK":
+                if len(main_squad) < 11:
+                    main_squad.append(player)
+                else:
+                    bench_squad.append(player)
+
+        return {"main": main_squad, "bench": bench_squad}
+
     else:
-        raise ValueError("Invalid GK selection. Ensure exactly 2 GKs are selected.")
-
-    # Split main and bench players
-    main_squad = [main_gk]
-    bench_squad = [bench_gk]
-    for player in selected_players:
-        if player["position"] != "GK":
-            if len(main_squad) < 11:
-                main_squad.append(player)
-            else:
-                bench_squad.append(player)
-                
-    return {"main": main_squad, "bench": bench_squad}
-
-
+        raise ValueError(f"Optimization failed")
 
 
 @api.route('/new_predictions', methods=['GET'])
