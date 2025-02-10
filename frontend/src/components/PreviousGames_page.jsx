@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import './PreviousGames.css'
+import "./PreviousGames.css";
 
 const teamLogos = {
   Arsenal: 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
