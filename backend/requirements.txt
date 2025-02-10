@@ -13,3 +13,4 @@ gunicorn
 python-dotenv
 flask-migrate
 flask-cors
+gunicorn

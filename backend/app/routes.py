@@ -15,18 +15,16 @@ from bs4 import BeautifulSoup
 import json
 import os
 
-# Set the correct path to the squads.json file
-SQUAD_FILE = os.path.join(os.path.dirname(__file__), "squads.json")
-
-# Create a Blueprint for the API
-api = Blueprint('api', __name__)
+# Ensure correct path to squads.json (relative to backend/)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SQUAD_FILE = os.path.join(BASE_DIR, "squads.json")
 
 def load_squads():
     """Load squads from JSON file if it exists."""
     if os.path.exists(SQUAD_FILE):
         with open(SQUAD_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
-    print("❌ squads.json not found!")
+    print(f"❌ squads.json not found at {SQUAD_FILE}!")
     return {}  # Return an empty dictionary if file does not exist
 
 # Load squads at server startup
