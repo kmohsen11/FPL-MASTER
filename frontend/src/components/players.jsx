@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './Players.css'
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"
+
 function Players() {
   const [players, setPlayers] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -12,9 +14,7 @@ function Players() {
     setError('')
     setPlayers([]) // Clear previous results
     try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/api/search?query=${searchTerm}`
-      )
+      const response = await fetch(`${API_BASE_URL}/api/search?query=${searchTerm}`)
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }

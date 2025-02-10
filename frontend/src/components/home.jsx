@@ -6,10 +6,12 @@ const Home = () => {
   const [bench, setBench] = useState([]);
   const [error, setError] = useState('');
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
+
   useEffect(() => {
     const fetchBestSquad = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/api/best-squad');
+        const response = await fetch(`${API_BASE_URL}/api/best-squad`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -31,6 +33,7 @@ const Home = () => {
 
     fetchBestSquad();
   }, []);
+
 
   return (
     <div className="home-container">
