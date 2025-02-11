@@ -8,5 +8,4 @@ port = int(os.environ.get("PORT", 5000))
 app = create_app()
 
 if __name__ == "__main__":
-    # Run the app on the dynamically assigned port (Heroku uses this environment variable)
-    app.run(debug=False, host="0.0.0.0", port=port)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
