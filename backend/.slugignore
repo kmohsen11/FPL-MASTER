@@ -1,7 +1,24 @@
+# Ignore data and prediction files
 pipeline/
 predictions/
-data/
-datasets/
+*.csv
+*.json
+*.xlsx
+
+# Ignore node_modules if not needed for deployment
+node_modules/
+
+# Ignore any other unnecessary files
+*.log
+*.tmp
+# Ignore model files
+*.h5
+*.pth
+*.pb
+models/
+predictions/
+
+# Ignore data and temporary files
 *.csv
 *.json
 *.xlsx

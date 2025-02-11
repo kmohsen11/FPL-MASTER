@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import "./Fixtures_style.css";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000"
+const API_BASE_URL = "https://fpl-master-48c1932d5d3b.herokuapp.com";
+
 
 function Fixtures() {
   const [fixtures, setFixtures] = useState([])
