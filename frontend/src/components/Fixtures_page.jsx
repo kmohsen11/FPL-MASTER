@@ -1,8 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import "./Fixtures_style.css";
 
-const API_BASE_URL = "https://fpl-master-48c1932d5d3b.herokuapp.com";
-
+const API_BASE_URL = "https://fpl-master-48c1932d5d3b.herokuapp.com"; // Updated API Base URL
 
 function Fixtures() {
   const [fixtures, setFixtures] = useState([])
@@ -57,9 +56,11 @@ function Fixtures() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch fixtures from the Heroku backend through the Vercel proxy
         const fixturesResponse = await fetch(`${API_BASE_URL}/api/fixtures`)
         const fixturesData = await fixturesResponse.json()
 
+        // Fetch teams from the Heroku backend through the Vercel proxy
         const teamsResponse = await fetch(`${API_BASE_URL}/api/teams`)
         const teamsData = await teamsResponse.json()
 
@@ -73,7 +74,7 @@ function Fixtures() {
 
         const filteredFixtures = fixturesData.filter((fixture) => {
           const fixtureDate = new Date(fixture.kickoff_time)
-          return fixtureDate > new Date()
+          return fixtureDate > new Date() // Only upcoming fixtures
         })
 
         const mappedFixtures = filteredFixtures.map((fixture) => ({

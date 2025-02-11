@@ -48,14 +48,16 @@ function PreviousGames() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch fixtures
+        // Fetch fixtures from Vercel Proxy
         const fixturesResponse = await fetch(
-          'http://localhost:4000/api/fixtures'
+          'https://fpl-master-48c1932d5d3b.herokuapp.com/api/fixtures'
         )
         const fixturesData = await fixturesResponse.json()
 
-        // Fetch teams
-        const teamsResponse = await fetch('http://localhost:4000/api/teams')
+        // Fetch teams from Vercel Proxy
+        const teamsResponse = await fetch(
+          'https://fpl-master-48c1932d5d3b.herokuapp.com/api/teams'
+        )
         const teamsData = await teamsResponse.json()
 
         // Create a team mapping for logos and names
