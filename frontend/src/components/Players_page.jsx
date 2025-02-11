@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import "./Players_style.css";
 
-const API_BASE_URL = "https://fpl-master-48c1932d5d3b.herokuapp.com";
-
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000"; // Default to local if not found
 
 function Players() {
   const [players, setPlayers] = useState([])
