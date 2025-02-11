@@ -1,2 +1,7 @@
 pipeline/
 predictions/
+data/
+datasets/
+*.csv
+*.json
+*.xlsx
