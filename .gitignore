@@ -24,3 +24,8 @@ predictions/
 
 # Ignore other potentially large files that shouldn't be in the repo
 *.bak
+# Ignore large files in backend
+backend/data/
+backend/predictions/
+backend/*.csv
+backend/*.json
