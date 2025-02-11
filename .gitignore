@@ -11,12 +11,16 @@ __pycache__/
 build/
 dist/
 
+# Node.js dependencies
 node_modules/
 
-#ignore data files and predictions 
+# Ignore data files and predictions
 data/
 datasets/
 predictions/
 *.csv
 *.json
 *.xlsx 
+
+# Ignore other potentially large files that shouldn't be in the repo
+*.bak

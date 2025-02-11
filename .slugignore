@@ -1,0 +1,16 @@
+# Exclude the following directories and files from Heroku slug
+myenv/
+.venv/
+node_modules/
+build/
+dist/
+data/
+datasets/
+predictions/
+*.csv
+*.json
+*.xlsx
+.cache/
+__pycache__/
+*.log
+*.bak
