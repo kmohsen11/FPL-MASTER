@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate  # Flask-Migrate for handling migrations
+from flask_migrate import Migrate
 import os
 
 # Initialize the database instance globally
@@ -28,11 +28,10 @@ def create_app():
     migrate.init_app(app, db)
 
     # Register Blueprints for routes
-    from app.routes import api  # Make sure this import is correct
+    from app.routes import api  # Ensure this import is correct
     app.register_blueprint(api, url_prefix='/api')
 
-    # Ensure all tables are created
-    with app.app_context():
-        db.create_all()  # This creates tables if they don't already exist. Commented out to avoid multiple calls
+    # Avoid using db.create_all() for migrations – this is for development use only
+    # You should be handling migrations with flask db migrate/upgrade commands
 
     return app
