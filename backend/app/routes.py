@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import Player, db
+from app import db
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 import numpy as np
