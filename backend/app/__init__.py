@@ -1,11 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate  # Flask-Migrate for handling migrations
 
 import os
 
 # Initialize the database instance globally
 db = SQLAlchemy()
+
+# Initialize Flask-Migrate
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
@@ -21,12 +25,15 @@ def create_app():
     # Initialize the database with the app
     db.init_app(app)
 
+    # Initialize Flask-Migrate with the app and database
+    migrate.init_app(app, db)
+
     # Register Blueprints for routes
     from app.routes import api
     app.register_blueprint(api, url_prefix='/api')
 
     # Ensure all tables are created
     with app.app_context():
-        db.create_all()
+        db.create_all()  # This creates tables if they don't already exist.
 
     return app

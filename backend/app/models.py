@@ -1,7 +1,4 @@
-# backend/models.py
-from app.db import db
-
-from custom_type import JSONEncodedList
+from app import db  # Import the db instance
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +14,6 @@ class Player(db.Model):
     team = db.relationship('Team', backref='players')
     position = db.Column(db.String(50), nullable=False)  # GK, DEF, MID, FWD
 
-
 class PlayerRoundPerformance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
@@ -27,4 +23,3 @@ class PlayerRoundPerformance(db.Model):
     predicted_points = db.Column(db.Float, nullable=False)  # Model predictions
     opponent_team_id = db.Column(db.Integer, db.ForeignKey('team.id'), nullable=False)  # Next opponent's team
     opponent_team = db.relationship('Team', foreign_keys=[opponent_team_id])
-  
