@@ -27,12 +27,13 @@ def create_app():
     # Initialize Flask-Migrate with the app and database
     migrate.init_app(app, db)
 
-    # Register Blueprints for routes
-    from app.routes import api  # Make sure this import is correct
-    app.register_blueprint(api, url_prefix='/api')
+   
 
     # Ensure all tables are created
     with app.app_context():
-        db.create_all()  # This creates tables if they don't already exist.
+        # Register Blueprints for routes
+        from app.routes import api  # Make sure this import is correct
+        app.register_blueprint(api, url_prefix='/api')
+            db.create_all()  # This creates tables if they don't already exist.
 
     return app
