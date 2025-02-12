@@ -6,7 +6,7 @@ from io import StringIO
 from sqlalchemy.exc import IntegrityError
 from . import db
 from .models import Team, Player, PlayerRoundPerformance
-from app import create_app  # Import the application factory function
+from . import create_app  # Use relative import  # Import the application factory function
 from .update_predictions import run_pipeline  # Import the pipeline runner
 
 # Constants
