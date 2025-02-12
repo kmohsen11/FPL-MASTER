@@ -49,8 +49,7 @@ def search_players():
 
         # Fetch all players from the database
         players = Player.query.options(joinedload(Player.round_performances)).all()
-         
-        print("Players:", players[:3])
+
         # Extract player names and points
         player_data = [
             {
@@ -77,7 +76,7 @@ def search_players():
 def get_best_squad():
     """Fetch the best squad based purely on predicted points and positions (no validity checks)."""
     try:
-            # Ensure this is within the app context
+        with current_app.app_context():  # Ensure this is within the app context
             print("🔍 Fetching best squad...")
        
 
@@ -86,7 +85,7 @@ def get_best_squad():
             # ✅ Fetch all players with predicted points
             players = Player.query.options(joinedload(Player.round_performances)).all()
             print(f"✅ Total players fetched: {len(players)}")
-
+            
             # ✅ Extract player details **without checking validity**
             all_players = [
                 {
