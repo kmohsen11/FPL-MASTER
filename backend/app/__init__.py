@@ -19,7 +19,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Avoid unnecessary overhead
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'Z9Q7E2KzC6b1f6z2qz9g3mE7P4q8zN0l')  # To handle sessions and CSRF
 
-    # 🔥 Allow CORS for all routes
+    # Allow CORS for all routes
     CORS(app)
 
     # Initialize the database with the app
@@ -29,7 +29,7 @@ def create_app():
     migrate.init_app(app, db)
 
     # Register Blueprints for routes
-    from app.routes import api
+    from app.routes import api  # Corrected import
     app.register_blueprint(api, url_prefix='/api')
 
     # Ensure all tables are created

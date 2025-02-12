@@ -29,3 +29,4 @@ backend/data/
 backend/predictions/
 backend/*.csv
 backend/*.json
+*.db
