@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 #import db from its bath
 from . import db
-from app.models import Player  # Corrected import
+from .models import Player  # Corrected import
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 import numpy as np
