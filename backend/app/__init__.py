@@ -2,7 +2,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate  # Flask-Migrate for handling migrations
-
 import os
 
 # Initialize the database instance globally
