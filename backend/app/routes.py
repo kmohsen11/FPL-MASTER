@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app import db
-from app.models import Player, db  # Corrected import
+from app.models import Player  # Corrected import
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 import numpy as np
