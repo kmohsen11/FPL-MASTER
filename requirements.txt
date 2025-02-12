@@ -14,3 +14,4 @@ numpy==1.26.4
 schedule==1.2.2
 rapidfuzz --no-binary :all:
 scipy --only-binary :all:
+beautifulsoup4
