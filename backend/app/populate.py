@@ -4,9 +4,10 @@ import requests
 import pandas as pd
 from io import StringIO
 from sqlalchemy.exc import IntegrityError
-from app.models import db, Team, Player, PlayerRoundPerformance
+from . import db
+from .models import Team, Player, PlayerRoundPerformance
 from app import create_app  # Import the application factory function
-from app.update_predictions import run_pipeline  # Import the pipeline runner
+from .update_predictions import run_pipeline  # Import the pipeline runner
 
 # Constants
 MERGED_GW_URL = "https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data/2024-25/gws/merged_gw.csv"
