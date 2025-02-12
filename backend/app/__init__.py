@@ -32,7 +32,7 @@ def create_app():
     app.register_blueprint(api, url_prefix='/api')
 
     # Ensure all tables are created
-    # With app.app_context():
-    #     db.create_all()  # This creates tables if they don't already exist. Commented out to avoid multiple calls
+    with app.app_context():
+        db.create_all()  # This creates tables if they don't already exist. Commented out to avoid multiple calls
 
     return app
