@@ -29,7 +29,7 @@ def create_app():
     migrate.init_app(app, db)
 
     # Register Blueprints for routes
-    from app.routes import api  # Corrected import
+    from app.routes import api  # Make sure this import is correct
     app.register_blueprint(api, url_prefix='/api')
 
     # Ensure all tables are created
