@@ -1,4 +1,4 @@
-from app import db  # Import db from the app context
+from . import db  # Import db from the app context
 
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
