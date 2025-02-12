@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 #import db from its bath
 from . import db
 from .models import Player  # Corrected import
