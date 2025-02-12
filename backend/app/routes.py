@@ -9,7 +9,7 @@ from collections import Counter
 from scipy.optimize import linprog
 from rapidfuzz import process  # Import for fuzzy string matching
 import schedule
-from app.populate import fetch_merged_gw, clean_database, load_predictions, populate_database  
+from .populate import fetch_merged_gw, clean_database, load_predictions, populate_database  
 import requests
 from bs4 import BeautifulSoup
 #import squads from pipeline
