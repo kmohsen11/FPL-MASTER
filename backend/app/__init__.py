@@ -34,6 +34,6 @@ def create_app():
         # Register Blueprints for routes
         from app.routes import api  # Make sure this import is correct
         app.register_blueprint(api, url_prefix='/api')
-            db.create_all()  # This creates tables if they don't already exist.
+        db.create_all()  # This creates tables if they don't already exist.
 
     return app
