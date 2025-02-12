@@ -13,5 +13,4 @@ pandas==2.2.3
 numpy==1.26.4
 schedule==1.2.2
 rapidfuzz --no-binary :all:
-scipy==1.7.3
-
+scipy --only-binary :all:
