@@ -75,58 +75,60 @@ def search_players():
 def get_best_squad():
     """Fetch the best squad based purely on predicted points and positions (no validity checks)."""
     try:
-        print("🔍 Fetching best squad...")
+        with current_app.app_context():  # Ensure this is within the app context
+            print("🔍 Fetching best squad...")
+       
 
-        # ✅ Position Mapping (Convert number-based positions)
-        POSITION_MAP = {"GK": "GK", "DEF": "DEF", "MID": "MID", "FWD": "FWD"}
-        # ✅ Fetch all players with predicted points
-        players = Player.query.options(joinedload(Player.round_performances)).all()
-        print(f"✅ Total players fetched: {len(players)}")
+            # ✅ Position Mapping (Convert number-based positions)
+            POSITION_MAP = {"GK": "GK", "DEF": "DEF", "MID": "MID", "FWD": "FWD"}
+            # ✅ Fetch all players with predicted points
+            players = Player.query.options(joinedload(Player.round_performances)).all()
+            print(f"✅ Total players fetched: {len(players)}")
 
-        # ✅ Extract player details **without checking validity**
-        all_players = [
-            {
-                "id": player.id,
-                "name": player.web_name,
-                "team": player.team.name if player.team else "Unknown",
-                "position": POSITION_MAP.get(player.position, "UNK"),  # Convert positions
-                "predicted_points": max([p.predicted_points for p in player.round_performances], default=0)
-            }
-            for player in players
-        ]
+            # ✅ Extract player details **without checking validity**
+            all_players = [
+                {
+                    "id": player.id,
+                    "name": player.web_name,
+                    "team": player.team.name if player.team else "Unknown",
+                    "position": POSITION_MAP.get(player.position, "UNK"),  # Convert positions
+                    "predicted_points": max([p.predicted_points for p in player.round_performances], default=0)
+                }
+                for player in players
+            ]
 
-        # ✅ Sort players by predicted points (highest first)
-        sorted_players = sorted(all_players, key=lambda x: x["predicted_points"], reverse=True)
-        print(f"✅ Players sorted by predicted points: {sorted_players[:3]}")
-        # ✅ **Categorize Players**
-        goalkeepers = [p for p in sorted_players if p["position"] == "GK"]
-        defenders = [p for p in sorted_players if p["position"] == "DEF"]
-        midfielders = [p for p in sorted_players if p["position"] == "MID"]
-        forwards = [p for p in sorted_players if p["position"] == "FWD"]
+            # ✅ Sort players by predicted points (highest first)
+            sorted_players = sorted(all_players, key=lambda x: x["predicted_points"], reverse=True)
+            print(f"✅ Players sorted by predicted points: {sorted_players[:3]}")
+            # ✅ **Categorize Players**
+            goalkeepers = [p for p in sorted_players if p["position"] == "GK"]
+            defenders = [p for p in sorted_players if p["position"] == "DEF"]
+            midfielders = [p for p in sorted_players if p["position"] == "MID"]
+            forwards = [p for p in sorted_players if p["position"] == "FWD"]
 
-        print(f"🧤 GK: {len(goalkeepers)}, 🛡️ DEF: {len(defenders)}, ⚡ MID: {len(midfielders)}, 🔥 FWD: {len(forwards)}")
+            print(f"🧤 GK: {len(goalkeepers)}, 🛡️ DEF: {len(defenders)}, ⚡ MID: {len(midfielders)}, 🔥 FWD: {len(forwards)}")
 
-        # ✅ **Ensure correct squad formation (15 players total)**
-        selected_gk = goalkeepers[:2]  # **Top 2 GKs**
-        selected_def = defenders[:5]   # **Top 5 DEF**
-        selected_mid = midfielders[:5] # **Top 5 MID**
-        selected_fwd = forwards[:3]    # **Top 3 FWD**
+            # ✅ **Ensure correct squad formation (15 players total)**
+            selected_gk = goalkeepers[:2]  # **Top 2 GKs**
+            selected_def = defenders[:5]   # **Top 5 DEF**
+            selected_mid = midfielders[:5] # **Top 5 MID**
+            selected_fwd = forwards[:3]    # **Top 3 FWD**
 
-        # ✅ **Starting XI (11 players)**
-        main_squad = [
-            selected_gk[0],  # **1 GK in starting XI**
-            *selected_def[:4],  # **4 Defenders**
-            *selected_mid[:4],  # **4 Midfielders**
-            *selected_fwd[:2],  # **2 Forwards**
-        ]
+            # ✅ **Starting XI (11 players)**
+            main_squad = [
+                selected_gk[0],  # **1 GK in starting XI**
+                *selected_def[:4],  # **4 Defenders**
+                *selected_mid[:4],  # **4 Midfielders**
+                *selected_fwd[:2],  # **2 Forwards**
+            ]
 
-        # ✅ **Bench (4 Players)**
-        bench = [
-            selected_gk[1],  # **Backup GK**
-            selected_def[4],  # **1 extra Defender**
-            selected_mid[4],  # **1 extra Midfielder**
-            selected_fwd[2],  # **1 extra Forward**
-        ]
+            # ✅ **Bench (4 Players)**
+            bench = [
+                selected_gk[1],  # **Backup GK**
+                selected_def[4],  # **1 extra Defender**
+                selected_mid[4],  # **1 extra Midfielder**
+                selected_fwd[2],  # **1 extra Forward**
+            ]
 
         return jsonify({"main": main_squad, "bench": bench})
 
