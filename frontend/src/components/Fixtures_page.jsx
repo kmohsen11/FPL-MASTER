@@ -1,104 +1,65 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react';
 import "./Fixtures_style.css";
 
 const API_BASE_URL = "https://fpl-master-48c1932d5d3b.herokuapp.com/api"; // No need for a proxy
 
+// ✅ Hardcoded team logos based on FPL team IDs
+const teamLogos = {
+  1: { name: "Arsenal", logo: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" },
+  2: { name: "Aston Villa", logo: "https://upload.wikimedia.org/wikipedia/en/9/9a/Aston_Villa_FC_new_crest.svg" },
+  3: { name: "Brentford", logo: "https://upload.wikimedia.org/wikipedia/en/2/2a/Brentford_FC_crest.svg" },
+  4: { name: "Brighton", logo: "https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg" },
+  5: { name: "Chelsea", logo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg" },
+  6: { name: "Crystal Palace", logo: "https://upload.wikimedia.org/wikipedia/en/a/a2/Crystal_Palace_FC_logo_%282022%29.svg" },
+  7: { name: "Everton", logo: "https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg" },
+  8: { name: "Liverpool", logo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" },
+  9: { name: "Man City", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg" },
+  10: { name: "Man Utd", logo: "https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg" },
+  11: { name: "Newcastle", logo: "https://upload.wikimedia.org/wikipedia/en/5/56/Newcastle_United_Logo.svg" },
+  12: { name: "Southampton", logo: "https://upload.wikimedia.org/wikipedia/en/c/c9/FC_Southampton.svg" },
+  13: { name: "Spurs", logo: "https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" },
+  14: { name: "West Ham", logo: "https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg" },
+  15: { name: "Wolves", logo: "https://upload.wikimedia.org/wikipedia/en/f/fc/Wolverhampton_Wanderers.svg" },
+  16: { name: "Nott'm Forest", logo: "https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg" },
+  17: { name: "Leicester", logo: "https://upload.wikimedia.org/wikipedia/en/2/2d/Leicester_City_crest.svg" },
+  18: { name: "Fulham", logo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Fulham_FC_%28shield%29.svg" },
+  19: { name: "Bournemouth", logo: "https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth_%282013%29.svg" },
+  20: { name: "Watford", logo: "https://upload.wikimedia.org/wikipedia/en/e/e2/Watford.svg" },
+  21: { name: "Ipswich", logo: "https://upload.wikimedia.org/wikipedia/en/4/43/Ipswich_Town.svg" },
+};
 
 function Fixtures() {
-  const [fixtures, setFixtures] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  // UseMemo to avoid recreating teamLogos on every render
-  const teamLogos = useMemo(
-    () => ({
-      Arsenal: 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
-      AstonVilla:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Aston_Villa_FC_new_crest.svg/300px-Aston_Villa_FC_new_crest.svg.png',
-      Brentford:
-        'https://upload.wikimedia.org/wikipedia/en/2/2a/Brentford_FC_crest.svg',
-      Brighton:
-        'https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg',
-      Chelsea: 'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg',
-      CrystalPalace:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/a/a2/Crystal_Palace_FC_logo_%282022%29.svg/350px-Crystal_Palace_FC_logo_%282022%29.svg.png',
-      Everton:
-        'https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg',
-      Liverpool:
-        'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg',
-      ManCity:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Manchester_City_FC_badge.svg/380px-Manchester_City_FC_badge.svg.png',
-      ManUtd:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/7/7a/Manchester_United_FC_crest.svg/400px-Manchester_United_FC_crest.svg.png',
-      Newcastle:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/5/56/Newcastle_United_Logo.svg/400px-Newcastle_United_Logo.svg.png',
-      Southampton:
-        'https://upload.wikimedia.org/wikipedia/en/c/c9/FC_Southampton.svg',
-      TottenhamHotspur:
-        'https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg',
-      WestHam:
-        'https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg',
-      Wolves:
-        'https://upload.wikimedia.org/wikipedia/en/f/fc/Wolverhampton_Wanderers.svg',
-      NottmForest:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/e/e5/Nottingham_Forest_F.C._logo.svg/220px-Nottingham_Forest_F.C._logo.svg.png',
-      Leicester:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Leicester_City_crest.svg/380px-Leicester_City_crest.svg.png',
-      Fulham:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/Fulham_FC_%28shield%29.svg/300px-Fulham_FC_%28shield%29.svg.png',
-      Bournemouth:
-        'https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth_%282013%29.svg',
-      Watford: 'https://upload.wikimedia.org/wikipedia/en/e/e2/Watford.svg',
-      Ipswich:
-        'https://upload.wikimedia.org/wikipedia/en/thumb/4/43/Ipswich_Town.svg/312px-Ipswich_Town.svg.png',
-    }),
-    []
-  )
+  const [fixtures, setFixtures] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch fixtures from the Heroku backend through the Vercel proxy
+        // ✅ Fetch only fixtures (no need for /api/teams)
         const fixturesResponse = await fetch(`${API_BASE_URL}/fixtures`, {
-          headers: {
-            "Content-Type": "application/json"
-          }
+          headers: { "Content-Type": "application/json" }
         });
-        
-        const fixturesData = await fixturesResponse.json()
+        const fixturesData = await fixturesResponse.json();
 
-        // Fetch teams from the Heroku backend through the Vercel proxy
-        const teamsResponse = await fetch(`${API_BASE_URL}/api/teams`)
-        const teamsData = await teamsResponse.json()
+        // ✅ Filter & map fixtures, adding hardcoded team logos
+        const filteredFixtures = fixturesData.fixtures
+          .filter(fixture => fixture.kickoff_time && new Date(fixture.kickoff_time) > new Date()) // Only upcoming fixtures
+          .map(fixture => ({
+            ...fixture,
+            team_h: teamLogos[fixture.team_h] || { name: "Unknown", logo: "https://via.placeholder.com/40" },
+            team_a: teamLogos[fixture.team_a] || { name: "Unknown", logo: "https://via.placeholder.com/40" },
+          }));
 
-        const teamMapping = {}
-        teamsData.teams.forEach((team) => {
-          teamMapping[team.id] = {
-            name: team.name,
-            logo: teamLogos[team.name] || 'https://via.placeholder.com/40',
-          }
-        })
-
-        const filteredFixtures = fixturesData.filter((fixture) => {
-          const fixtureDate = new Date(fixture.kickoff_time)
-          return fixtureDate > new Date() // Only upcoming fixtures
-        })
-
-        const mappedFixtures = filteredFixtures.map((fixture) => ({
-          ...fixture,
-          team_h: teamMapping[fixture.team_h],
-          team_a: teamMapping[fixture.team_a],
-        }))
-
-        setFixtures(mappedFixtures)
+        setFixtures(filteredFixtures);
       } catch (error) {
-        console.error('Error fetching fixtures:', error)
+        console.error('Error fetching fixtures:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [teamLogos]) // Include teamLogos as a dependency
+    fetchData();
+  }, []);
 
   return loading ? (
     <div className="container">Loading fixtures...</div>
@@ -110,10 +71,10 @@ function Fixtures() {
       ) : (
         Object.entries(
           fixtures.reduce((acc, fixture) => {
-            const { event } = fixture // Game week number
-            if (!acc[event]) acc[event] = []
-            acc[event].push(fixture)
-            return acc
+            const { event } = fixture; // Game week number
+            if (!acc[event]) acc[event] = [];
+            acc[event].push(fixture);
+            return acc;
           }, {})
         ).map(([gameWeek, fixtures]) => (
           <div key={gameWeek}>
@@ -142,7 +103,7 @@ function Fixtures() {
         ))
       )}
     </div>
-  )
+  );
 }
 
-export default Fixtures
+export default Fixtures;
