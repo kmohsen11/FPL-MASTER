@@ -2,9 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  root: 'frontend', // ✅ Explicitly set frontend as the root
-  plugins: [react()],
+  root: '.',  // Ensure Vite looks in the current folder
   build: {
-    outDir: '../dist', // ✅ Ensures the build output is placed correctly
+    outDir: 'dist',
+    emptyOutDir: true,  // Ensure the output directory is cleared
   },
+  plugins: [react()],
 });
