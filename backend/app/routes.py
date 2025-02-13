@@ -266,3 +266,37 @@ def run_new_predictions():
     except Exception as e:
         print(f"Error in /run_new_predictions: {e}")
         return jsonify({"error": f"Failed to run prediction pipeline: {str(e)}"}), 500
+    
+    
+
+FPL_FIXTURES_URL = "https://fantasy.premierleague.com/api/fixtures/"
+
+@api.route('/fixtures', methods=['GET'])
+def get_fixtures():
+    """
+    Fetch fixtures from the FPL API and return formatted data.
+    """
+    try:
+        response = requests.get(FPL_FIXTURES_URL)
+        response.raise_for_status()  # Raise an error if the request fails
+        fixtures = response.json()
+
+        formatted_fixtures = [
+            {
+                "id": fixture["id"],
+                "event": fixture.get("event", "TBD"),  # Game week
+                "kickoff_time": fixture.get("kickoff_time", None),
+                "team_h": fixture["team_h"],  # Home team ID
+                "team_a": fixture["team_a"],  # Away team ID
+                "team_h_score": fixture.get("team_h_score", None),
+                "team_a_score": fixture.get("team_a_score", None),
+                "finished": fixture.get("finished", False),
+            }
+            for fixture in fixtures
+        ]
+
+        return jsonify({"fixtures": formatted_fixtures}), 200
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching fixtures: {e}")
+        return jsonify({"error": "Failed to fetch fixtures"}), 500
