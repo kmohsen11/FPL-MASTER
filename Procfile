@@ -1,2 +1,2 @@
 web: python backend/run.py
-proxy: node proxy/proxy.js
+proxy: cd proxy && node proxy.js
