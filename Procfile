@@ -1,2 +1,2 @@
 web: python backend/run.py
-worker: node frontend/proxy.js
+worker: cd frontend && node proxy.js
