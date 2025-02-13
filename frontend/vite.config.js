@@ -1,23 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  root: 'frontend', // ✅ Explicitly set frontend as the root
   plugins: [react()],
-  server: {
-    proxy: process.env.NODE_ENV === 'development' ? {
-      '/auth': {
-        target: 'http://localhost:5000', // Only for local dev
-        changeOrigin: true,
-        secure: false,
-      },
-    } : undefined,  // Proxy only in dev mode
-  },
   build: {
-    outDir: 'dist', // Ensure output directory is correct
+    outDir: '../dist', // ✅ Ensures the build output is placed correctly
   },
-  resolve: {
-    alias: {
-      '@': '/src',
-    },
-  },
-})
+});
