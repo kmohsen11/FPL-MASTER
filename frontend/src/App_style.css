@@ -5,32 +5,6 @@ body {
   background-color: #f4f4f9; /* Soft light background */
   color: #333; /* Default dark text for readability */
 }
-
-/* Navigation Bar */
-nav {
-  display: flex;
-  justify-content: center;
-  background-color: #333; /* Dark gray background */
-  padding: 15px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-/* notiong bar logo */
-
-nav a {
-  color: white; /* White text for links */
-  text-decoration: none; /* Remove underlines */
-  margin: 0 15px; /* Space between links */
-  padding: 10px 20px; /* Add padding for clickable area */
-  background-color: #444; /* Slightly lighter background for links */
-  border-radius: 5px;
-  transition: 0.3s ease; /* Smooth hover effect */
-}
-
-nav a:hover {
-  background-color: #555; /* Highlight on hover */
-  transform: translateY(-2px); /* Pop-up effect */
-}
-
 /* Main Content Heading */
 h2 {
   text-align: center;
