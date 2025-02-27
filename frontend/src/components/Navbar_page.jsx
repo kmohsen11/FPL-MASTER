@@ -19,11 +19,21 @@ const Navbar = () => {
         <span></span>
       </div>
       <div className={`navbar-links ${isMenuOpen ? "active" : ""}`}>
-        <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
-        <Link to="/fixtures" onClick={() => setIsMenuOpen(false)}>Fixtures</Link>
-        <Link to="/previous-games" onClick={() => setIsMenuOpen(false)}>Previous Games</Link>
-        <Link to="/players" onClick={() => setIsMenuOpen(false)}>Players</Link>
-        <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+        <Link to="/" onClick={() => setIsMenuOpen(false)}>
+          Home
+        </Link>
+        <Link to="/fixtures" onClick={() => setIsMenuOpen(false)}>
+          Fixtures
+        </Link>
+        <Link to="/previous-games" onClick={() => setIsMenuOpen(false)}>
+          Previous Games
+        </Link>
+        <Link to="/players" onClick={() => setIsMenuOpen(false)}>
+          Players
+        </Link>
+        <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
+          Contact
+        </Link>
       </div>
     </nav>
   );
