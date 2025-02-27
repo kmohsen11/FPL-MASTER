@@ -69,34 +69,6 @@ h2 {
   margin: 20px 0;
   text-align: center;
   color: #fff; /* White text for dark background */
-}
-
-/* Navigation Bar */
-nav {
-  display: flex;
-  justify-content: center;
-  background-color: #333;
-  padding: 15px;
-  width: 100%; /* Full width */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  margin: 0 15px;
-  padding: 10px 20px;
-  background-color: #444;
-  border-radius: 5px;
-  transition:
-    background-color 0.3s ease,
-    transform 0.2s ease;
-}
-
-nav a:hover {
-  background-color: #555;
-  transform: translateY(-2px);
-}
 
 /* Content Container */
 .container {
