@@ -14,17 +14,20 @@ h2 {
 
 .pitch {
   margin: 20px auto;
-  background-color: #007f3f;
-  border-radius: 10px;
-  padding: 20px;
-  width: 90%;
+  background-color: #1a472a;
+  border-radius: 15px;
+  padding: 30px 20px;
+  width: 95%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  border: 5px solid #004d26;
+  gap: 20px;
+  border: 8px solid #0d2614;
   position: relative;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/*   just the player cards */
 .position-row {
   display: flex;
   justify-content: center;
@@ -32,47 +35,86 @@ h2 {
 }
 
 .player-card {
-  background-color: #eaf8ea;
-  color: #000;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 120px;
+  width: 140px;
+  transition: all 0.3s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.player-card h3 {
+  font-size: 0.9em;
+  margin: 0 0 8px 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.player-card p {
+  font-size: 0.85em;
+  color: #666;
+  margin: 5px 0;
 }
 
 /* Position-Specific Styling */
 .goalkeeper {
-  background-color: #ffd700;
-  border: 2px solid #b8860b;
+  background: linear-gradient(145deg, #ffd700, #ffc800);
+  border-bottom: 3px solid #b8860b;
 }
 
 .defender {
-  background-color: #add8e6;
-  border: 2px solid #4682b4;
+  background: linear-gradient(145deg, #add8e6, #9cc8d6);
+  border-bottom: 3px solid #4682b4;
 }
 
 .midfielder {
-  background-color: #90ee90;
-  border: 2px solid #006400;
+  background: linear-gradient(145deg, #90ee90, #80de80);
+  border-bottom: 3px solid #006400;
 }
 
 .forward {
-  background-color: #ff6b6b;
-  border: 2px solid #8b0000;
+  background: linear-gradient(145deg, #ff6b6b, #ef5b5b);
+  border-bottom: 3px solid #8b0000;
 }
 
 .bench {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
 }
 
 .bench-player {
-  background-color: #f0e4d7;
-  border: 2px solid #d6a057;
-  border-radius: 5px;
-  padding: 10px;
-  width: 100px;
+  background: linear-gradient(145deg, #f0e4d7, #e0d4c7);
+  border-bottom: 3px solid #d6a057;
 }
+
+@media (max-width: 768px) {
+  .pitch {
+    padding: 15px 10px;
+    width: 100%;
+  }
+
+  .position-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .player-card {
+    width: 120px;
+    padding: 10px;
+  }
+
+  .bench {
+    flex-wrap: wrap;
+  }
+}
+
+/* Ensure no styles here override the navbar */
