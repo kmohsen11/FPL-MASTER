@@ -90,9 +90,3 @@ h2 {
   }
 }
 
-.navbar-logo {
-  width: 50px; /* Adjust this value to make the logo smaller or larger */
-  height: auto; /* Maintains the aspect ratio */
-  /* Optional: Add some margin or padding if needed */
-  margin: 5px;
-}
